@@ -4,40 +4,46 @@ import nltk
 from telepot.loop import MessageLoop
 from constants import *
 
-state = None
-user = None
+user_req = None
+chat_state = dict()
 plan = dict()
 
 
 def handle(msg):
-    global state, user
+    global chat_state, user_req, plan
 
     chat_id = msg['chat']['id']
     text = msg['text']
+    user = msg['from']['username']
     tokens = nltk.word_tokenize(text)
     command = tokens[0]
+    send_msg = ""
 
     print('Got command: %s' % command)
-    # print(msg)
+    print(msg)
 
-    if state is None and command == '/new':
-        state = NEW_PLAN_DESC
-        user = msg['from']['id']
-        send_msg = 'What is the event? Reply using command "/what".'
-    elif state == NEW_PLAN_DESC and msg['from']['id'] == user and command == '/what':
-        state = NEW_PLAN_LOC
+    if chat_id not in chat_state:
+        chat_state[chat_id] = None
+
+    if chat_state[chat_id] is None and command == '/new':
+        chat_state[chat_id] = NEW_PLAN_DESC
+        user_req = user
+        send_msg = '{}\nWhat is the event? Reply using command: /what.'.format("@" + user_req)
+    elif chat_state[chat_id] == NEW_PLAN_DESC and user_req == user and command == '/what':
+        chat_state[chat_id] = NEW_PLAN_LOC
         plan["desc"] = ' '.join(tokens[1:])
-        send_msg = 'Where is the event? Reply using command "/where".'
-    elif state == NEW_PLAN_LOC and msg['from']['id'] == user and command == '/where':
-        state = NEW_PLAN_TIME
+        send_msg = '{}\nWhere is the event? Reply using command: /where.'.format("@" + user_req)
+    elif chat_state[chat_id] == NEW_PLAN_LOC and user_req == user and command == '/where':
+        chat_state[chat_id] = NEW_PLAN_TIME
         plan["place"] = ' '.join(tokens[1:])
-        send_msg = 'When is the event? Reply using command "/when".'
-    elif state == NEW_PLAN_TIME and msg['from']['id'] == user and command == '/when':
-        state = None    # Reset state
+        send_msg = '{}\nWhen is the event? Reply using command: /when.'.format("@" + user_req)
+    elif chat_state[chat_id] == NEW_PLAN_TIME and user_req == user and command == '/when':
+        chat_state[chat_id] = None    # Reset state
         plan["time"] = ' '.join(tokens[1:])
         send_msg = 'desc: {}\nplace: {}\ntime: {}'.format(plan["desc"], plan["place"], plan["time"])
 
-    bot.sendMessage(chat_id, send_msg)
+    if send_msg:
+        bot.sendMessage(chat_id, send_msg)
 
 
 TOKEN = "491299803:AAFHXQRRI7BzNIrCUdoW2p80nt0gHFo5A_w"
@@ -49,5 +55,5 @@ MessageLoop(bot, handle).run_as_thread()
 print('Listening ...')
 
 # Keep the program running.
-while 1:
+while True:
     time.sleep(1)
