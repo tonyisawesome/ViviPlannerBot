@@ -7,9 +7,12 @@ class Planner:
             self.plans[chat_id] = []
 
         self.plans[chat_id].append({"desc": desc,
-                                    "place": place,
+                                    "loc": place,
                                     "time": time})
 
-    def view_plan(self):
-        for i, plan in enumerate(self.plans):
-            print("{}. {}".format(str(i + 1), plan["desc"]))
+    def view_plan(self, chat_id):
+        if chat_id not in self.plans:
+            return "*No events found!*"
+
+        plans = ["{}. {}".format(str(i + 1), plan["desc"]) for i, plan in enumerate(self.plans[chat_id])]
+        return "*Events*\n\n" + '\n'.join(plans)

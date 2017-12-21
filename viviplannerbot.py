@@ -1,49 +1,65 @@
 import time
 import telepot
-import nltk
+import telegram
 from telepot.loop import MessageLoop
 from constants import *
+from database import Planner
 
-user_req = None
-chat_state = dict()
-plan = dict()
+chats = dict()
+planner = Planner()
+
+
+def init_chat_info(chat_id):
+    chats[chat_id] = {"state": None,
+                      "user_id": None,
+                      "event": dict()}
+
+
+def ask_user(chat_id, state):
+    bot.sendMessage(chat_id, '{} is the event?\n\nReply with: /{}.'.format(state.title(), state))
 
 
 def handle(msg):
-    global chat_state, user_req, plan
+    global chats, planner
 
     chat_id = msg['chat']['id']
     text = msg['text']
-    user = msg['from']['username']
-    tokens = nltk.word_tokenize(text)
-    command = tokens[0]
-    send_msg = ""
+    split = text.split(' ', 1)
+    command = split[0]
+    user = msg['from']['id']
 
     print('Got command: %s' % command)
     print(msg)
 
-    if chat_id not in chat_state:
-        chat_state[chat_id] = None
+    if chat_id not in chats:
+        init_chat_info(chat_id)
 
-    if chat_state[chat_id] is None and command == '/new':
-        chat_state[chat_id] = NEW_PLAN_DESC
-        user_req = user
-        send_msg = '{}\nWhat is the event? Reply using command: /what.'.format("@" + user_req)
-    elif chat_state[chat_id] == NEW_PLAN_DESC and user_req == user and command == '/what':
-        chat_state[chat_id] = NEW_PLAN_LOC
-        plan["desc"] = ' '.join(tokens[1:])
-        send_msg = '{}\nWhere is the event? Reply using command: /where.'.format("@" + user_req)
-    elif chat_state[chat_id] == NEW_PLAN_LOC and user_req == user and command == '/where':
-        chat_state[chat_id] = NEW_PLAN_TIME
-        plan["place"] = ' '.join(tokens[1:])
-        send_msg = '{}\nWhen is the event? Reply using command: /when.'.format("@" + user_req)
-    elif chat_state[chat_id] == NEW_PLAN_TIME and user_req == user and command == '/when':
-        chat_state[chat_id] = None    # Reset state
-        plan["time"] = ' '.join(tokens[1:])
-        send_msg = 'desc: {}\nplace: {}\ntime: {}'.format(plan["desc"], plan["place"], plan["time"])
-
-    if send_msg:
-        bot.sendMessage(chat_id, send_msg)
+    if command == '/new':
+        chats[chat_id]["state"] = NEW_EVENT_DESC
+        chats[chat_id]["user_id"] = user
+        ask_user(chat_id, "what")
+    elif chats[chat_id]["state"] == NEW_EVENT_DESC and chats[chat_id]["user_id"] == user and command == '/what':
+        chats[chat_id]["state"] = NEW_EVENT_LOC
+        chats[chat_id]["event"]["desc"] = split[1]
+        ask_user(chat_id, "where")
+    elif chats[chat_id]["state"] == NEW_EVENT_LOC and chats[chat_id]["user_id"] == user and command == '/where':
+        chats[chat_id]["state"] = NEW_EVENT_TIME
+        chats[chat_id]["event"]["loc"] = split[1]
+        ask_user(chat_id, "when")
+    elif chats[chat_id]["state"] == NEW_EVENT_TIME and chats[chat_id]["user_id"] == user and command == '/when':
+        chats[chat_id]["event"]["time"] = split[1]
+        plan = chats[chat_id]["event"]
+        # bot.sendMessage(chat_id, 'desc: {}\nplace: {}\ntime: {}'.format(plan["desc"], plan["loc"], plan["time"]))
+        planner.new_plan(chat_id, plan["desc"], plan["loc"], plan["time"])
+        init_chat_info(chat_id)
+    elif command == '/cancel':
+        if chats[chat_id]["state"] is not None:
+            bot.sendMessage(chat_id, 'New event creation cancelled.')
+            init_chat_info(chat_id)
+        else:
+            bot.sendMessage(chat_id, 'No new event currently being created.')
+    elif command == '/view':
+        bot.sendMessage(chat_id, planner.view_plan(chat_id), parse_mode=telegram.ParseMode.MARKDOWN)
 
 
 TOKEN = "491299803:AAFHXQRRI7BzNIrCUdoW2p80nt0gHFo5A_w"
