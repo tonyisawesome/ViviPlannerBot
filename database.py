@@ -12,7 +12,7 @@ class Planner:
 
     def view_plan(self, chat_id):
         if chat_id not in self.plans:
-            return "*No events found!*"
+            return "*No events found!* 😞"
 
         plans = ["{}. {}".format(str(i + 1), plan["desc"]) for i, plan in enumerate(self.plans[chat_id])]
         return "*Events*\n\n" + '\n'.join(plans)

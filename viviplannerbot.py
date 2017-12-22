@@ -16,7 +16,9 @@ def init_chat_info(chat_id):
 
 
 def ask_user(chat_id, state):
-    bot.sendMessage(chat_id, '{} is the event?\n\nReply with: /{}.'.format(state.title(), state))
+    bot.sendMessage(chat_id,
+                    '_{}_ is the event?\n\nReply using /{}.'.format(state.title(), state),
+                    parse_mode=telegram.ParseMode.MARKDOWN)
 
 
 def handle(msg):
@@ -37,6 +39,7 @@ def handle(msg):
     if command == '/new':
         chats[chat_id]["state"] = NEW_EVENT_DESC
         chats[chat_id]["user_id"] = user
+        bot.sendMessage(chat_id, '*Planning a new event...* 🤔', parse_mode=telegram.ParseMode.MARKDOWN)
         ask_user(chat_id, "what")
     elif chats[chat_id]["state"] == NEW_EVENT_DESC and chats[chat_id]["user_id"] == user and command == '/what':
         chats[chat_id]["state"] = NEW_EVENT_LOC
@@ -49,17 +52,18 @@ def handle(msg):
     elif chats[chat_id]["state"] == NEW_EVENT_TIME and chats[chat_id]["user_id"] == user and command == '/when':
         chats[chat_id]["event"]["time"] = split[1]
         plan = chats[chat_id]["event"]
-        # bot.sendMessage(chat_id, 'desc: {}\nplace: {}\ntime: {}'.format(plan["desc"], plan["loc"], plan["time"]))
         planner.new_plan(chat_id, plan["desc"], plan["loc"], plan["time"])
-        init_chat_info(chat_id)
+        bot.sendMessage(chat_id, "*New event added!* 😘", parse_mode=telegram.ParseMode.MARKDOWN)
+        init_chat_info(chat_id)         # Reset
     elif command == '/cancel':
         if chats[chat_id]["state"] is not None:
-            bot.sendMessage(chat_id, 'New event creation cancelled.')
-            init_chat_info(chat_id)
+            bot.sendMessage(chat_id, 'The current operation is cancelled. ☺')
+            init_chat_info(chat_id)     # Reset
         else:
-            bot.sendMessage(chat_id, 'No new event currently being created.')
+            bot.sendMessage(chat_id, 'There is no current operation. 😅')
     elif command == '/view':
         bot.sendMessage(chat_id, planner.view_plan(chat_id), parse_mode=telegram.ParseMode.MARKDOWN)
+    # TODO: elif command == '/help':
 
 
 TOKEN = "491299803:AAFHXQRRI7BzNIrCUdoW2p80nt0gHFo5A_w"
