@@ -1,24 +1,39 @@
 import datefinder
-from datetime import datetime
+import datetime
+import re
+
+days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
 def str2datetime(string):
-    matches = datefinder.find_dates(string)
+    m = re.search("(\d{1,2})[-/.](\d{1,2})([-/.]\d{1,4})?", string)
 
-    if not matches:
+    # Handle the case of no year stated
+    if m:
+        tmp = m.group(0)
+        day = m.group(1)
+        month = months[int(m.group(2)) - 1]
+
+        if m.group(3) is None:
+            string = re.sub(tmp, day + " " + month, string)
+
+    try:
+        return datefinder.find_dates(string).__next__()
+    except StopIteration:
         return string
 
-    dates = []
 
-    for match in matches:
-        dayofweek, date, time = reformat(match)
-        dates.append("{}, {}, {}".format(dayofweek, date, match.time().strftime("%H:%M")))
+def datetime2str(dt):
+    if type(dt) is not datetime.datetime:
+        return dt
 
-    return dates[0]     # Assuming there is only one datetime for now
+    dayofweek, date, time = reformat(dt)
 
+    if time == "00:00":
+        return "{}, {}".format(dayofweek, date)
 
-days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct❤ber", "Nov", "Dec"]
+    return "{}, {}, {}".format(dayofweek, date, time)
 
 
 def reformat(dt):
