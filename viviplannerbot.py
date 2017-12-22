@@ -4,6 +4,7 @@ import telegram
 from telepot.loop import MessageLoop
 from constants import *
 from database import Planner
+from datetimemgr import *
 
 chats = dict()
 planner = Planner()
@@ -50,7 +51,10 @@ def handle(msg):
         chats[chat_id]["event"]["loc"] = split[1]
         ask_user(chat_id, "when")
     elif chats[chat_id]["state"] == NEW_EVENT_TIME and chats[chat_id]["user_id"] == user and command == '/when':
-        chats[chat_id]["event"]["time"] = split[1]
+        string = split[1]
+        chats[chat_id]["event"]["time"] = str2datetime(string)
+
+        # Save to database
         plan = chats[chat_id]["event"]
         planner.new_plan(chat_id, plan["desc"], plan["loc"], plan["time"])
         bot.sendMessage(chat_id, "*New event added!* 😘", parse_mode=telegram.ParseMode.MARKDOWN)
