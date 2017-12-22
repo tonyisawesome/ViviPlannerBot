@@ -13,11 +13,16 @@ class Planner:
                                     "loc": place,
                                     "time": time})
 
-    def show_all(self, chat_id):
-        if chat_id not in self.plans:
-            return "*No events found!* 😞"
+    def get_desc(self, chat_id, i):
+        try:
+            return self.plans[chat_id][i]["desc"]
+        except IndexError:
+            return None
+        except KeyError:
+            return None
 
-        if not self.plans[chat_id]:
+    def show_all(self, chat_id):
+        if chat_id not in self.plans or not self.plans[chat_id]:
             return "No events planned currently.\n\n😪 *B O R I N G* 😪"
 
         plans = ["{}. {}".format(str(i + 1), plan["desc"]) for i, plan in enumerate(self.plans[chat_id])]
@@ -33,12 +38,14 @@ class Planner:
                    "{}\n\n" \
                    "*Date/Time*\n" \
                    "{}".format(event["desc"], event["loc"], datetime2str(event["time"]))
+        except KeyError:
+            return None
         except IndexError:
-            return "The number you have entered is invalid."
+            return None
 
     def delete(self, chat_id, i):
         try:
             del self.plans[chat_id][i]
             return "*The event is removed!* 🙃"
         except KeyError:
-            return "The number you have entered is invalid."
+            return "*The event is not found!* 😞"
