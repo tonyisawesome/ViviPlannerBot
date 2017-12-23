@@ -23,10 +23,10 @@ class Planner:
 
     def show_all(self, chat_id):
         if chat_id not in self.plans or not self.plans[chat_id]:
-            return "No events planned currently.\n\n😪 *B O R I N G* 😪"
+            return "No events planned currently.\n\n😪 *B O R I N G* 😪", []
 
         plans = ["{}. {}".format(str(i + 1), plan["desc"]) for i, plan in enumerate(self.plans[chat_id])]
-        return "*Events*\n\n" + '\n'.join(plans)
+        return "*Events*", plans
 
     def show(self, chat_id, i):
         try:
