@@ -1,4 +1,5 @@
-from datetimemgr import datetime2str
+from datetimemgr import datetime2str, str2datetime
+import datetime
 
 
 class Planner:
@@ -11,7 +12,7 @@ class Planner:
 
         self.plans[chat_id].append({"desc": desc,
                                     "loc": place,
-                                    "time": time})
+                                    "dt": time})
 
     def get_desc(self, chat_id, i):
         try:
@@ -21,23 +22,115 @@ class Planner:
         except KeyError:
             return None
 
+    def set_desc(self, chat_id, i, desc):
+        try:
+            self.plans[chat_id][i]["desc"] = desc
+            return "*Description is updated!* 😎"
+        except IndexError:
+            return False
+        except KeyError:
+            return False
+
+    def get_loc(self, chat_id, i):
+        try:
+            return self.plans[chat_id][i]["loc"]
+        except IndexError:
+            return None
+        except KeyError:
+            return None
+
+    def set_loc(self, chat_id, i, loc):
+        try:
+            self.plans[chat_id][i]["loc"] = loc
+            return "*Location is updated!* 😎"
+        except IndexError:
+            return False
+        except KeyError:
+            return False
+
+    def get_date(self, chat_id, i):
+        try:
+            dt = self.plans[chat_id][i]["dt"]
+
+            if type(dt) is datetime.datetime:
+                string = datetime2str(dt)
+
+                if ":" not in string:
+                    return string
+
+                return string[:string.rfind(",")]
+
+            return dt
+        except IndexError:
+            return None
+        except KeyError:
+            return None
+
+    def set_date(self, chat_id, i, date):
+        try:
+            dt = self.plans[chat_id][i]["dt"]
+
+            if type(dt) is datetime.datetime:
+                date += " " + self.get_time(chat_id, i)
+
+            self.plans[chat_id][i]["dt"] = str2datetime(date)
+            return "*Date is updated!* 😎"
+        except IndexError:
+            return False
+        except KeyError:
+            return False
+
+    def get_time(self, chat_id, i):
+        try:
+            dt = self.plans[chat_id][i]["dt"]
+
+            if type(dt) is datetime.datetime:
+                string = datetime2str(dt)
+
+                if ":" in string:
+                    return string[string.rfind(",") + 2:]
+
+                return ""
+
+            return dt
+        except IndexError:
+            return None
+        except KeyError:
+            return None
+
+    def set_time(self, chat_id, i, time):
+        try:
+            dt = self.plans[chat_id][i]["dt"]
+
+            if type(dt) is datetime.datetime:
+                time += " " + self.get_date(chat_id, i)
+                self.plans[chat_id][i]["dt"] = str2datetime(time)
+            else:
+                return "_Set a date first!_"
+
+            return "*Time is edited!* 😎"
+        except IndexError:
+            return False
+        except KeyError:
+            return False
+
     def show_all(self, chat_id):
         if chat_id not in self.plans or not self.plans[chat_id]:
-            return "No events planned currently.\n\n😪 *B O R I N G* 😪", []
+            return "_No events planned currently._", []
 
-        plans = ["{}. {}".format(str(i + 1), plan["desc"]) for i, plan in enumerate(self.plans[chat_id])]
-        return "*Events*", plans
+        plans = ["{}".format(plan["desc"]) for i, plan in enumerate(self.plans[chat_id])]
+        return "Choose an event from the list below:", plans
 
     def show(self, chat_id, i):
         try:
             event = self.plans[chat_id][i]
 
-            return "*Event*\n" \
+            return "*Description*\n" \
                    "{}\n\n" \
                    "*Location\n*" \
                    "{}\n\n" \
                    "*Date/Time*\n" \
-                   "{}".format(event["desc"], event["loc"], datetime2str(event["time"]))
+                   "{}".format(event["desc"], event["loc"], datetime2str(event["dt"]))
         except KeyError:
             return None
         except IndexError:
@@ -49,3 +142,5 @@ class Planner:
             return "*The event is removed!* 🙃"
         except KeyError:
             return "*The event is not found!* 😞"
+        except IndexError:
+            return "*This action is invalid!* 😾"

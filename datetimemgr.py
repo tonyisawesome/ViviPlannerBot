@@ -2,14 +2,18 @@ import datefinder
 import datetime
 import re
 
-days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
 def str2datetime(string):
-    m = re.search("(\d{1,2})[-/.](\d{1,2})([-/.]\d{1,4})?", string)
+    # Pre-processing
+    string = string.replace(".", ":")
+    string = parse_dayofweek(string)
 
-    # Handle the case of no year stated
+    m = re.search("(\d{1,2})[-/](\d{1,2})([-/]\d{1,4})?", string)
+
+    # Handle the case when no year stated
     if m:
         tmp = m.group(0)
         day = m.group(1)
@@ -43,3 +47,19 @@ def reformat(dt):
         day, month = dt.day, dt.month
 
     return days[dt.date().weekday()], "{} {} {}".format(day, months[month - 1], dt.year), dt.time().strftime("%H:%M")
+
+
+short_days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+
+
+def parse_dayofweek(string):
+    try:
+        m = re.search("(mon)|(tue)|(wed)|(thu)|(fri)|(sat)|(sun)", string.lower())
+        n = re.search("\d", string)
+
+        if m and not n:
+            string += " 00:00"  # Add a dummy time
+
+        return string
+    except AttributeError:
+        return string

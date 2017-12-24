@@ -9,6 +9,9 @@ def parse(text):
         split = text.split(' ', 1)
         command, content = split[0], ""
 
+        if "@" in command:
+            command = command[:re.search("@", command).start()]
+
         if len(split) == 2:
             content = split[1]
 
