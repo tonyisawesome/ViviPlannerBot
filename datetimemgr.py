@@ -6,7 +6,7 @@ days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sun
 months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
 
-def str2datetime(string):
+def get_datetime(string):
     # Pre-processing
     string = string.replace(".", ":")
     string = parse_dayofweek(string)
@@ -63,3 +63,7 @@ def parse_dayofweek(string):
         return string
     except AttributeError:
         return string
+
+
+def is_datetime(dt_str):
+    return type(get_datetime(dt_str)) is datetime.datetime

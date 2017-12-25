@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetimemgr import is_datetime
 
 
 def parse(text):
@@ -38,7 +38,7 @@ def sort_plans(plans):
     without_dt = []
 
     for plan in plans:
-        if type(plan['dt']) is datetime:
+        if is_datetime(plan['dt']):
             with_dt.append(plan)
         else:
             without_dt.append(plan)

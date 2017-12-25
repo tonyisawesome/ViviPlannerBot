@@ -2,6 +2,7 @@ import time
 import telepot
 import telegram
 import util
+import iomgr
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton, ForceReply
 from telepot.loop import MessageLoop
 from constants import *
@@ -9,7 +10,7 @@ from database import Planner
 from datetimemgr import *
 
 chats = dict()
-planner = Planner()
+planner = Planner(iomgr.load())
 
 
 def init_chat_info(chat_id):
@@ -194,7 +195,7 @@ def edit_time(chat_id, i, t):
 def on_chat_message(msg):
     global chats, planner
 
-    chat_id = msg['chat']['id']
+    chat_id = str(msg['chat']['id'])
     text = msg['text']
     command, content = util.parse(text)
 
@@ -219,7 +220,8 @@ def on_chat_message(msg):
             chats[chat_id]["event"]["loc"] = content
             query_user_new(chat_id, msg['from'], "when")
         elif 'when is the event?' in reply_to_text.lower():
-            chats[chat_id]["event"]["dt"] = str2datetime(content)
+            # chats[chat_id]["event"]["dt"] = str2datetime(content)
+            chats[chat_id]["event"]["dt"] = datetime2str(get_datetime(content))
 
             # Save to database
             add_event(chat_id, chats[chat_id]["event"], msg['from'])
@@ -232,11 +234,11 @@ def on_chat_message(msg):
         elif "editing the time" in reply_to_text:
             edit_time(chat_id, chats[chat_id]['event_selected'], content)
         else:
-            send_msg(chat_id, msg="_Nya? わかりません…_ 😿")
+            send_msg(chat_id, msg="Nya? わかりません… 😿")
     elif command == '/all':
         show_events(chat_id, '/show')
     elif command == '/help':
-        send_msg(chat_id, "You can start by sending /menu! Nya~ 😽")
+        send_msg(chat_id, "You can start by /menu! Nya~ 😽")
     # elif command == '/show':
     #     try:
     #         i = int(content) - 1
@@ -277,9 +279,6 @@ def on_chat_message(msg):
     #         init_chat_info(chat_id)     # Reset
     #     else:
     #         send_msg(chat_id, msg='There is currently no operation. 😅')
-    # TODO: elif command == '/setdescription':
-    # TODO: elif command == '/setlocation':
-    # TODO: elif command == '/settime':
     else:
         send_msg(chat_id, msg="_My wish is your command._ 😏")
 
