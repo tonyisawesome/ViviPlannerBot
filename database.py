@@ -4,16 +4,16 @@ import iomgr
 
 
 class Planner:
-    def __init__(self, plans):
-        self.plans = plans if plans else dict()
+    def __init__(self):
+        self.plans = iomgr.load()
 
     def new_plan(self, chat_id, desc, place, time):
         if chat_id not in self.plans:
-            self.plans[chat_id] = []
+            self.plans[str(chat_id)] = []
 
-        self.plans[chat_id].append({"desc": desc,
-                                    "loc": place,
-                                    "dt": time})
+        self.plans[str(chat_id)].append({"desc": desc,
+                                         "loc": place,
+                                         "dt": time})
 
         iomgr.save(self.plans)
 
@@ -21,7 +21,7 @@ class Planner:
 
     def get_desc(self, chat_id, i):
         try:
-            return self.plans[chat_id][i]["desc"]
+            return self.plans[str(chat_id)][i]["desc"]
         except IndexError:
             return None
         except KeyError:
@@ -29,7 +29,7 @@ class Planner:
 
     def set_desc(self, chat_id, i, desc):
         try:
-            self.plans[chat_id][i]["desc"] = desc
+            self.plans[str(chat_id)][i]["desc"] = desc
             iomgr.save(self.plans)
             return "*Description is updated!* 😎"
         except IndexError:
@@ -39,7 +39,7 @@ class Planner:
 
     def get_loc(self, chat_id, i):
         try:
-            return self.plans[chat_id][i]["loc"]
+            return self.plans[str(chat_id)][i]["loc"]
         except IndexError:
             return None
         except KeyError:
@@ -47,7 +47,7 @@ class Planner:
 
     def set_loc(self, chat_id, i, loc):
         try:
-            self.plans[chat_id][i]["loc"] = loc
+            self.plans[str(chat_id)][i]["loc"] = loc
             iomgr.save(self.plans)
             return "*Location is updated!* 😎"
         except IndexError:
@@ -57,7 +57,7 @@ class Planner:
 
     def get_date(self, chat_id, i):
         try:
-            dt_str = self.plans[chat_id][i]["dt"]
+            dt_str = self.plans[str(chat_id)][i]["dt"]
 
             if is_datetime(dt_str) and ":" in dt_str:
                 return dt_str[:dt_str.rfind(",")]
@@ -70,12 +70,13 @@ class Planner:
 
     def set_date(self, chat_id, i, date):
         try:
+            chat_id = str(chat_id)
             dt_str = self.plans[chat_id][i]["dt"]
             date = datetime2str(get_datetime(date))
             time = self.get_time(chat_id, i)
 
             if is_datetime(dt_str) and time:
-                self.plans[chat_id][i]["dt"] = date + ", " + time
+                date += ", " + time
 
             self.plans[chat_id][i]["dt"] = date
             iomgr.save(self.plans)
@@ -87,7 +88,7 @@ class Planner:
 
     def get_time(self, chat_id, i):
         try:
-            dt_str = self.plans[chat_id][i]["dt"]
+            dt_str = self.plans[str(chat_id)][i]["dt"]
 
             if is_datetime(dt_str):
                 if ":" in dt_str:
@@ -103,11 +104,11 @@ class Planner:
 
     def set_time(self, chat_id, i, time):
         try:
-            dt_str = self.plans[chat_id][i]["dt"]
+            dt_str = self.plans[str(chat_id)][i]["dt"]
 
             if is_datetime(dt_str):
                 dt_str = self.get_date(chat_id, i) + ", " + time
-                self.plans[chat_id][i]["dt"] = datetime2str(get_datetime(dt_str))
+                self.plans[str(chat_id)][i]["dt"] = datetime2str(get_datetime(dt_str))
             else:
                 return "_Set a date first!_"
 
@@ -130,7 +131,7 @@ class Planner:
 
     def show(self, chat_id, i):
         try:
-            event = self.plans[chat_id][i]
+            event = self.plans[str(chat_id)][i]
 
             return "*Description*\n" \
                    "{}\n\n" \
@@ -145,7 +146,7 @@ class Planner:
 
     def delete(self, chat_id, i):
         try:
-            del self.plans[chat_id][i]
+            del self.plans[str(chat_id)][i]
             iomgr.save(self.plans)
             return "*The event is removed!* 🙃"
         except KeyError:

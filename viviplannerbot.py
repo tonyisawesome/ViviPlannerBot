@@ -2,7 +2,6 @@ import time
 import telepot
 import telegram
 import util
-import iomgr
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton, ForceReply
 from telepot.loop import MessageLoop
 from constants import *
@@ -10,7 +9,7 @@ from database import Planner
 from datetimemgr import *
 
 chats = dict()
-planner = Planner(iomgr.load())
+planner = Planner()
 
 
 def init_chat_info(chat_id):
@@ -144,6 +143,7 @@ def show_event(chat_id, i, msg_id=None):
                         msg,
                         parse_mode=telegram.ParseMode.MARKDOWN,
                         reply_markup=reply_markup)
+
     chats[chat_id]['event_selected'] = i
 
 
@@ -195,7 +195,7 @@ def edit_time(chat_id, i, t):
 def on_chat_message(msg):
     global chats, planner
 
-    chat_id = str(msg['chat']['id'])
+    chat_id = msg['chat']['id']
     text = msg['text']
     command, content = util.parse(text)
 
