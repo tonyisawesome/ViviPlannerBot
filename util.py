@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 
 def parse(text):
@@ -30,3 +31,19 @@ def build_menu(buttons,
         menu.append(footer_buttons)
 
     return menu
+
+
+def sort_plans(plans):
+    with_dt = []
+    without_dt = []
+
+    for plan in plans:
+        if type(plan['dt']) is datetime:
+            with_dt.append(plan)
+        else:
+            without_dt.append(plan)
+
+    with_dt = sorted(with_dt,
+                     key=lambda x: x['dt'])
+
+    return with_dt + without_dt

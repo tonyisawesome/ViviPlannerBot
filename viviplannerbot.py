@@ -19,11 +19,14 @@ def init_chat_info(chat_id):
                       "event": dict()}
 
 
-def query_user_new(chat_id, query):
+def query_user_new(chat_id, from_info, query):
+    user_id, first_name = from_info['id'], from_info['first_name']
     bot.sendMessage(chat_id,
-                    '_{}_ is the event?'.format(query.title(), query),
+                    '[{}](tg://user?id={}), _{}_ is the event?'.format(first_name,
+                                                                       user_id,
+                                                                       query),
                     parse_mode=telegram.ParseMode.MARKDOWN,
-                    reply_markup=ForceReply())
+                    reply_markup=ForceReply(selective=True))
 
 
 emojis = {'description': '📝', 'location': '🏖', 'date': '📆', 'time': '🕜🕡'}
@@ -50,7 +53,7 @@ def query_user_edit(chat_id, from_info, i, query):
                                                                                  emojis[query],
                                                                                  content),
                     parse_mode=telegram.ParseMode.MARKDOWN,
-                    reply_markup=ForceReply())
+                    reply_markup=ForceReply(selective=True))
 
 
 def send_msg(chat_id, msg=""):
@@ -75,7 +78,7 @@ def show_menu(chat_id, from_info, msg_id=None):
         InlineKeyboardButton(text="New Event", callback_data="/new"),
         InlineKeyboardButton(text="Edit Event", callback_data="/edit"),
         InlineKeyboardButton(text="Delete Event", callback_data="/delete"),
-        InlineKeyboardButton(text="Events List", callback_data="/showall")
+        InlineKeyboardButton(text="Events List", callback_data="/all")
     ]
 
     reply_markup = InlineKeyboardMarkup(inline_keyboard=util.build_menu(button_list, n_cols=2))
@@ -100,10 +103,10 @@ def init_new_event_query(chat_id, from_info):
     user_id, first_name = from_info['id'], from_info['first_name']
     send_msg(chat_id,
              msg='[{}](tg://user?id={}) *is planning a new event...* 🤔'.format(first_name, user_id))
-    query_user_new(chat_id, "what")
+    query_user_new(chat_id, from_info, "what")
 
 
-def show_events(chat_id, msg_id, cmd):
+def show_events(chat_id, cmd, msg_id=None):
     text, events = planner.show_all(chat_id)
     button_list = [InlineKeyboardButton(text=desc, callback_data="{} {}".format(cmd, i)) for i, desc in enumerate(events)]
     footer_buttons = [InlineKeyboardButton(text="« Back to Main Menu", callback_data="/menu")]
@@ -209,13 +212,13 @@ def on_chat_message(msg):
     elif 'reply_to_message' in msg and msg['reply_to_message']['from']['is_bot']:
         reply_to_text = msg['reply_to_message']['text']
 
-        if reply_to_text == 'What is the event?':
+        if 'what is the event?' in reply_to_text.lower():
             chats[chat_id]["event"]["desc"] = content
-            query_user_new(chat_id, "where")
-        elif reply_to_text == 'Where is the event?':
+            query_user_new(chat_id, msg['from'], "where")
+        elif 'where is the event?' in reply_to_text.lower():
             chats[chat_id]["event"]["loc"] = content
-            query_user_new(chat_id, "when")
-        elif reply_to_text == 'When is the event?':
+            query_user_new(chat_id, msg['from'], "when")
+        elif 'when is the event?' in reply_to_text.lower():
             chats[chat_id]["event"]["dt"] = str2datetime(content)
 
             # Save to database
@@ -230,8 +233,10 @@ def on_chat_message(msg):
             edit_time(chat_id, chats[chat_id]['event_selected'], content)
         else:
             send_msg(chat_id, msg="_Nya? わかりません…_ 😿")
-    elif command == '/showall':
+    elif command == '/all':
         show_events(chat_id, '/show')
+    elif command == '/help':
+        send_msg(chat_id, "You can start by sending /menu! Nya~ 😽")
     # elif command == '/show':
     #     try:
     #         i = int(content) - 1
@@ -275,7 +280,6 @@ def on_chat_message(msg):
     # TODO: elif command == '/setdescription':
     # TODO: elif command == '/setlocation':
     # TODO: elif command == '/settime':
-    # TODO: elif command == '/help':
     else:
         send_msg(chat_id, msg="_My wish is your command._ 😏")
 
@@ -294,9 +298,9 @@ def on_callback_query(msg):
     if query_data == '/new':
         bot.answerCallbackQuery(query_id, "EXCITING! Please tell me... 😻")
         init_new_event_query(chat_id, msg['from'])
-    elif query_data == '/showall':
-        show_events(chat_id, msg_id, '/show')
-        bot.answerCallbackQuery(query_id)
+    elif query_data == '/all':
+        text = "Let's go somewhere! GO! GO! GO! 😹" if not show_events(chat_id, '/show', msg_id=msg_id) else ""
+        bot.answerCallbackQuery(query_id, text)
     elif '/show' in query_data:
         show_event(chat_id, int(query_data.split(' ', 1)[1]), msg_id=msg_id)
         bot.answerCallbackQuery(query_id)
@@ -306,7 +310,7 @@ def on_callback_query(msg):
         elif len(query_data.split(' ', 1)) == 2:
             edit_event(chat_id, msg_id, int(query_data.split(' ', 1)[1]))
         else:
-            show_events(chat_id, msg_id, '/edit')
+            show_events(chat_id, '/edit', msg_id=msg_id)
 
         bot.answerCallbackQuery(query_id)
     elif '/setdescription' == query_data:
@@ -344,7 +348,7 @@ def on_callback_query(msg):
             text = "Aww... 😿"
 
         bot.answerCallbackQuery(query_id, text=text)
-        show_events(chat_id, msg_id, '/delete')             # Refresh UI
+        show_events(chat_id, '/delete', msg_id=msg_id)             # Refresh UI
     elif query_data == '/menu':
         show_menu(chat_id, msg['from'], msg_id=msg_id)
         bot.answerCallbackQuery(query_id)

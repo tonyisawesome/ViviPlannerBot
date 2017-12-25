@@ -1,5 +1,7 @@
 from datetimemgr import datetime2str, str2datetime
 import datetime
+from util import sort_plans
+import iomgr
 
 
 class Planner:
@@ -13,6 +15,8 @@ class Planner:
         self.plans[chat_id].append({"desc": desc,
                                     "loc": place,
                                     "dt": time})
+
+        # self.plans[chat_id] = sort_plans(self.plans[chat_id])
 
     def get_desc(self, chat_id, i):
         try:
@@ -106,9 +110,9 @@ class Planner:
                 time += " " + self.get_date(chat_id, i)
                 self.plans[chat_id][i]["dt"] = str2datetime(time)
             else:
-                return "_Set a date first!_"
+                return "_Set a date first!_ "
 
-            return "*Time is edited!* 😎"
+            return "*Time is updated!* 😎"
         except IndexError:
             return False
         except KeyError:
@@ -118,6 +122,7 @@ class Planner:
         if chat_id not in self.plans or not self.plans[chat_id]:
             return "_No events planned currently._", []
 
+        self.plans[chat_id] = sort_plans(self.plans[chat_id])
         plans = ["{}".format(plan["desc"]) for i, plan in enumerate(self.plans[chat_id])]
         return "Choose an event from the list below:", plans
 
@@ -144,3 +149,13 @@ class Planner:
             return "*The event is not found!* 😞"
         except IndexError:
             return "*This action is invalid!* 😾"
+
+    def save(self):
+        data = dict()
+
+        for chat_id, plans in self.plans.items():
+            if chat_id not in data:
+                data[chat_id] = []
+
+            for plan in self.plans:
+                plan
