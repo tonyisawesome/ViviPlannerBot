@@ -201,7 +201,7 @@ def on_chat_message(msg):
 
     print('Got command: %s' % command)
     print('Got content: %s' % content)
-    print(msg)
+    # print(msg)
 
     if chat_id not in chats:
         init_chat_info(chat_id)
@@ -289,7 +289,7 @@ def on_callback_query(msg):
     query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
     chat_id = msg['message']['chat']['id']
     msg_id = msg['message']['message_id']
-    print(msg)
+    # print(msg)
 
     if chat_id not in chats:
         init_chat_info(chat_id)

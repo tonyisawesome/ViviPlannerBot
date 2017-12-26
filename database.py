@@ -1,5 +1,5 @@
 from datetimemgr import datetime2str, get_datetime, is_datetime
-from util import sort_plans
+from util import sort_plans, filter_plans
 import iomgr
 
 
@@ -8,13 +8,16 @@ class Planner:
         self.plans = iomgr.load()
 
     def new_plan(self, chat_id, desc, place, time):
+        chat_id = str(chat_id)
+
         if chat_id not in self.plans:
-            self.plans[str(chat_id)] = []
+            self.plans[chat_id] = []
 
-        self.plans[str(chat_id)].append({"desc": desc,
-                                         "loc": place,
-                                         "dt": time})
+        self.plans[chat_id].append({"desc": desc,
+                                    "loc": place,
+                                    "dt": time})
 
+        print("Added a new event!")
         iomgr.save(self.plans)
 
         # self.plans[chat_id] = sort_plans(self.plans[chat_id])
@@ -121,6 +124,7 @@ class Planner:
 
     def show_all(self, chat_id):
         chat_id = str(chat_id)
+        filter_plans(self.plans[chat_id])
 
         if chat_id not in self.plans or not self.plans[chat_id]:
             return "_No events planned currently._", []

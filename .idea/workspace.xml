@@ -5,6 +5,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/database.py" afterPath="$PROJECT_DIR$/database.py" />
       <change beforePath="$PROJECT_DIR$/plans.json" afterPath="$PROJECT_DIR$/plans.json" />
+      <change beforePath="$PROJECT_DIR$/util.py" afterPath="$PROJECT_DIR$/util.py" />
       <change beforePath="$PROJECT_DIR$/viviplannerbot.py" afterPath="$PROJECT_DIR$/viviplannerbot.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,15 +17,15 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/ViviPlannerBot$io.coverage" NAME="io Coverage Results" MODIFIED="1514127332356" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ViviPlannerBot$viviplannerbot.coverage" NAME="viviplannerbot Coverage Results" MODIFIED="1514199222248" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ViviPlannerBot$viviplannerbot.coverage" NAME="viviplannerbot Coverage Results" MODIFIED="1514204600628" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="viviplannerbot.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="viviplannerbot.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/viviplannerbot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="338">
-              <caret line="109" column="32" lean-forward="false" selection-start-line="109" selection-start-column="32" selection-end-line="109" selection-end-column="32" />
+            <state relative-caret-position="1665">
+              <caret line="292" column="0" lean-forward="true" selection-start-line="292" selection-start-column="0" selection-end-line="292" selection-end-column="0" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
                 <element signature="e#328#484#0" expanded="false" />
@@ -33,7 +34,11 @@
                 <element signature="e#2172#2281#0" expanded="false" />
                 <element signature="e#2328#2685#0" expanded="false" />
                 <element signature="e#2740#3770#0" expanded="false" />
+                <element signature="e#3823#4056#0" expanded="false" />
+                <element signature="e#4107#4909#0" expanded="false" />
+                <element signature="e#4957#5793#0" expanded="false" />
                 <element signature="e#5836#6820#0" expanded="false" />
+                <element signature="e#6868#7130#0" expanded="false" />
                 <element signature="e#7170#7250#0" expanded="false" />
                 <element signature="e#7288#7366#0" expanded="false" />
                 <element signature="e#7406#7486#0" expanded="false" />
@@ -46,8 +51,8 @@
       <file leaf-file-name="util.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/util.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="37" column="19" lean-forward="true" selection-start-line="37" selection-start-column="19" selection-end-line="37" selection-end-column="19" />
+            <state relative-caret-position="438">
+              <caret line="53" column="25" lean-forward="false" selection-start-line="53" selection-start-column="25" selection-end-line="53" selection-end-column="25" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -65,11 +70,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="database.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="database.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/database.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="389">
-              <caret line="78" column="35" lean-forward="true" selection-start-line="78" selection-start-column="35" selection-end-line="78" selection-end-column="35" />
+            <state relative-caret-position="272">
+              <caret line="130" column="0" lean-forward="true" selection-start-line="130" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
               <folding>
                 <element signature="e#0#63#0" expanded="true" />
               </folding>
@@ -146,10 +151,10 @@
         <option value="$PROJECT_DIR$/constants.py" />
         <option value="$PROJECT_DIR$/io.py" />
         <option value="$PROJECT_DIR$/datetimemgr.py" />
-        <option value="$PROJECT_DIR$/util.py" />
         <option value="$PROJECT_DIR$/iomgr.py" />
         <option value="$PROJECT_DIR$/viviplannerbot.py" />
         <option value="$PROJECT_DIR$/database.py" />
+        <option value="$PROJECT_DIR$/util.py" />
       </list>
     </option>
   </component>
@@ -331,7 +336,11 @@
             <element signature="e#2172#2281#0" expanded="false" />
             <element signature="e#2328#2685#0" expanded="false" />
             <element signature="e#2740#3770#0" expanded="false" />
+            <element signature="e#3823#4056#0" expanded="false" />
+            <element signature="e#4107#4909#0" expanded="false" />
+            <element signature="e#4957#5793#0" expanded="false" />
             <element signature="e#5836#6820#0" expanded="false" />
+            <element signature="e#6868#7130#0" expanded="false" />
             <element signature="e#7170#7250#0" expanded="false" />
             <element signature="e#7288#7366#0" expanded="false" />
             <element signature="e#7406#7486#0" expanded="false" />
@@ -370,7 +379,11 @@
             <element signature="e#2172#2281#0" expanded="false" />
             <element signature="e#2328#2685#0" expanded="false" />
             <element signature="e#2740#3770#0" expanded="false" />
+            <element signature="e#3823#4056#0" expanded="false" />
+            <element signature="e#4107#4909#0" expanded="false" />
+            <element signature="e#4957#5793#0" expanded="false" />
             <element signature="e#5836#6820#0" expanded="false" />
+            <element signature="e#6868#7130#0" expanded="false" />
             <element signature="e#7170#7250#0" expanded="false" />
             <element signature="e#7288#7366#0" expanded="false" />
             <element signature="e#7406#7486#0" expanded="false" />
@@ -488,21 +501,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/util.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="37" column="19" lean-forward="true" selection-start-line="37" selection-start-column="19" selection-end-line="37" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/plans.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="52" lean-forward="true" selection-start-line="0" selection-start-column="52" selection-end-line="0" selection-end-column="52" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/database.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="130" column="0" lean-forward="true" selection-start-line="130" selection-start-column="0" selection-end-line="130" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#63#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -514,10 +527,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/util.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="438">
+          <caret line="53" column="25" lean-forward="false" selection-start-line="53" selection-start-column="25" selection-end-line="53" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/viviplannerbot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="338">
-          <caret line="109" column="32" lean-forward="false" selection-start-line="109" selection-start-column="32" selection-end-line="109" selection-end-column="32" />
+        <state relative-caret-position="1665">
+          <caret line="292" column="0" lean-forward="true" selection-start-line="292" selection-start-column="0" selection-end-line="292" selection-end-column="0" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
             <element signature="e#328#484#0" expanded="false" />
@@ -526,21 +549,15 @@
             <element signature="e#2172#2281#0" expanded="false" />
             <element signature="e#2328#2685#0" expanded="false" />
             <element signature="e#2740#3770#0" expanded="false" />
+            <element signature="e#3823#4056#0" expanded="false" />
+            <element signature="e#4107#4909#0" expanded="false" />
+            <element signature="e#4957#5793#0" expanded="false" />
             <element signature="e#5836#6820#0" expanded="false" />
+            <element signature="e#6868#7130#0" expanded="false" />
             <element signature="e#7170#7250#0" expanded="false" />
             <element signature="e#7288#7366#0" expanded="false" />
             <element signature="e#7406#7486#0" expanded="false" />
             <element signature="e#7523#7600#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/database.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="389">
-          <caret line="78" column="35" lean-forward="true" selection-start-line="78" selection-start-column="35" selection-end-line="78" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#63#0" expanded="true" />
           </folding>
         </state>
       </provider>

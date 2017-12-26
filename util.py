@@ -1,5 +1,6 @@
 import re
-from datetimemgr import is_datetime
+from datetime import datetime
+from datetimemgr import is_datetime, get_datetime
 
 
 def parse(text):
@@ -47,3 +48,10 @@ def sort_plans(plans):
                      key=lambda x: x['dt'])
 
     return with_dt + without_dt
+
+
+def filter_plans(plans):
+    for i, plan in enumerate(plans):
+        if is_datetime(plan['dt']) and get_datetime(plan['dt']) < datetime.now():
+            print(plan['desc'] + " is outdated!")
+            del plans[i]
