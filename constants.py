@@ -3,3 +3,5 @@ NEW_EVENT_LOC = 1
 NEW_EVENT_TIME = 2
 VALUE_ERROR = "ValueError"
 NO_EVENT_FOUND = "no event found"
+PLANS_JSON = "plans.json"
+HISTORY_JSON = "history.json"
