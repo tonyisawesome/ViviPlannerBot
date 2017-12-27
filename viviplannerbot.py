@@ -11,6 +11,8 @@ from datetimemgr import *
 chats = dict()
 planner = Planner()
 
+emojis = {'description': '📝', 'location': '🏖', 'date': '📆', 'time': '🕜🕡'}
+
 
 def init_chat_info(chat_id):
     chats[chat_id] = {"state": None,
@@ -27,9 +29,6 @@ def query_user_new(chat_id, from_info, query):
                                                                        query),
                     parse_mode=telegram.ParseMode.MARKDOWN,
                     reply_markup=ForceReply(selective=True))
-
-
-emojis = {'description': '📝', 'location': '🏖', 'date': '📆', 'time': '🕜🕡'}
 
 
 def query_user_edit(chat_id, from_info, i, query):

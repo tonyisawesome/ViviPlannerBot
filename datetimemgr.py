@@ -4,6 +4,7 @@ import re
 
 days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+short_days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
 
 def get_datetime(string):
@@ -46,10 +47,7 @@ def reformat(dt):
     else:
         day, month = dt.day, dt.month
 
-    return days[dt.date().weekday()], "{} {} {}".format(day, months[month - 1], dt.year), dt.time().strftime("%H:%M")
-
-
-short_days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+    return short_days[dt.date().weekday()].title(), "{} {} {}".format(day, months[month - 1], dt.year), dt.time().strftime("%H:%M")
 
 
 def parse_dayofweek(string):

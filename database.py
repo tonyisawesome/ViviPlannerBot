@@ -78,7 +78,7 @@ class Planner:
             date = datetime2str(get_datetime(date))
             time = self.get_time(chat_id, i)
 
-            if is_datetime(dt_str) and time:
+            if ":" not in date and is_datetime(dt_str) and time:
                 date += ", " + time
 
             self.plans[chat_id][i]["dt"] = date
