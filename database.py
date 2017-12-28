@@ -16,8 +16,8 @@ class Planner:
         if chat_id not in self.plans:
             self.plans[chat_id] = []
 
-        self.plans[chat_id].append({"desc": desc,
-                                    "loc": place,
+        self.plans[chat_id].append({"desc": desc.title(),
+                                    "loc": place.title(),
                                     "dt": time})
 
         print("Added a new event!")
@@ -35,7 +35,7 @@ class Planner:
 
     def set_desc(self, chat_id, i, desc):
         try:
-            self.plans[str(chat_id)][i]["desc"] = desc
+            self.plans[str(chat_id)][i]["desc"] = desc.title()
             iomgr.save(PLANS_JSON, self.plans)
             return "*Description is updated!* 😎"
         except IndexError:
@@ -53,7 +53,7 @@ class Planner:
 
     def set_loc(self, chat_id, i, loc):
         try:
-            self.plans[str(chat_id)][i]["loc"] = loc
+            self.plans[str(chat_id)][i]["loc"] = loc.title()
             iomgr.save(PLANS_JSON, self.plans)
             return "*Location is updated!* 😎"
         except IndexError:

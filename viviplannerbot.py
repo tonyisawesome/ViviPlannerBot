@@ -110,7 +110,7 @@ def init_new_event_query(chat_id, from_info):
 def show_events(chat_id, cmd, msg_id=None):
     text, events = planner.show_all(chat_id)
     button_list = [InlineKeyboardButton(text=desc, callback_data="{} {}".format(cmd, i)) for i, desc in enumerate(events)]
-    footer_buttons = [InlineKeyboardButton(text="« Back to Main Menu", callback_data="/menu")]
+    footer_buttons = [InlineKeyboardButton(text="« Back to Menu", callback_data="/menu")]
     reply_markup = InlineKeyboardMarkup(inline_keyboard=util.build_menu(button_list, footer_buttons=footer_buttons))
 
     if msg_id:
@@ -130,7 +130,7 @@ def show_events(chat_id, cmd, msg_id=None):
 def show_event(chat_id, i, msg_id=None):
     button_list = [InlineKeyboardButton(text="Edit Event", callback_data="/edit"),
                    InlineKeyboardButton(text="Delete Event", callback_data="/delete"),
-                   InlineKeyboardButton(text="« Back to Main Menu", callback_data="/menu")]
+                   InlineKeyboardButton(text="« Back to Menu", callback_data="/menu")]
     reply_markup = InlineKeyboardMarkup(inline_keyboard=util.build_menu(button_list, n_cols=2))
     msg = planner.show(chat_id, i)
 
@@ -151,8 +151,8 @@ def show_event(chat_id, i, msg_id=None):
 def show_histories(chat_id, msg_id=None):
     text, events = planner.show_history(chat_id)
     button_list = [InlineKeyboardButton(text=desc, callback_data="{} {}".format("/history", i)) for i, desc in enumerate(events)]
-    footer_buttons = [InlineKeyboardButton(text="« Back to Main Menu", callback_data="/menu")]
-    reply_markup = InlineKeyboardMarkup(inline_keyboard=util.build_menu(button_list, n_cols=2, footer_buttons=footer_buttons))
+    footer_buttons = [InlineKeyboardButton(text="« Back to Menu", callback_data="/menu")]
+    reply_markup = InlineKeyboardMarkup(inline_keyboard=util.build_menu(button_list, footer_buttons=footer_buttons))
 
     if msg_id:
         bot.editMessageText((chat_id, msg_id),
@@ -169,9 +169,10 @@ def show_histories(chat_id, msg_id=None):
 
 
 def show_history(chat_id, i, msg_id=None):
-    button_list = [InlineKeyboardButton(text="Add Note", callback_data="/edit"),
-                   InlineKeyboardButton(text="Edit Note", callback_data="/delete"),
-                   InlineKeyboardButton(text="« Back to Main Menu", callback_data="/menu")]
+    button_list = [InlineKeyboardButton(text="Add Note", callback_data="/add_note"),
+                   InlineKeyboardButton(text="Edit Note", callback_data="/edit_note"),
+                   InlineKeyboardButton(text="« Back to List", callback_data="/histories"),
+                   InlineKeyboardButton(text="« Back to Menu", callback_data="/menu")]
     reply_markup = InlineKeyboardMarkup(inline_keyboard=util.build_menu(button_list, n_cols=2))
     msg = planner.show(chat_id, i, history=True)
 
@@ -189,21 +190,24 @@ def show_history(chat_id, i, msg_id=None):
     chats[chat_id]['history_selected'] = i
 
 
-def edit_event(chat_id, msg_id, i):
+def edit_event(chat_id, i, msg_id=None):
     button_list = [InlineKeyboardButton(text="Edit Description", callback_data="/setdescription"),
                    InlineKeyboardButton(text="Edit Location", callback_data="/setlocation"),
                    InlineKeyboardButton(text="Edit Date", callback_data="/setdate"),
                    InlineKeyboardButton(text="Edit Time", callback_data="/settime"),
-                   InlineKeyboardButton(text="« Back to Main Menu", callback_data="/menu")]
+                   InlineKeyboardButton(text="« Back to Menu", callback_data="/menu")]
     reply_markup = InlineKeyboardMarkup(inline_keyboard=util.build_menu(button_list, n_cols=2))
-    bot.editMessageText((chat_id, msg_id),
+
+    if msg_id:
+        bot.editMessageText((chat_id, msg_id),
+                            planner.show(chat_id, i),
+                            parse_mode=telegram.ParseMode.MARKDOWN,
+                            reply_markup=reply_markup)
+    else:
+        bot.sendMessage(chat_id,
                         planner.show(chat_id, i),
                         parse_mode=telegram.ParseMode.MARKDOWN,
                         reply_markup=reply_markup)
-    # bot.sendMessage(chat_id,
-    #                 planner.show(chat_id, i),
-    #                 parse_mode=telegram.ParseMode.MARKDOWN,
-    #                 reply_markup=reply_markup)
     chats[chat_id]['event_selected'] = i
 
 
@@ -216,22 +220,22 @@ def add_event(chat_id, plan, from_info):
 
 def edit_desc(chat_id, i, desc):
     send_msg(chat_id, planner.set_desc(chat_id, i, desc))
-    show_event(chat_id, i)
+    edit_event(chat_id, i)
 
 
 def edit_loc(chat_id, i, loc):
     send_msg(chat_id, planner.set_loc(chat_id, i, loc))
-    show_event(chat_id, i)
+    edit_event(chat_id, i)
 
 
 def edit_date(chat_id, i, date):
     send_msg(chat_id, planner.set_date(chat_id, i, date))
-    show_event(chat_id, i)
+    edit_event(chat_id, i)
 
 
 def edit_time(chat_id, i, t):
     send_msg(chat_id, planner.set_time(chat_id, i, t))
-    show_event(chat_id, i)
+    edit_event(chat_id, i)
 
 
 def on_chat_message(msg):
@@ -350,9 +354,9 @@ def on_callback_query(msg):
         bot.answerCallbackQuery(query_id)
     elif '/edit' in query_data:
         if chats[chat_id]['event_selected'] is not None:
-            edit_event(chat_id, msg_id, chats[chat_id]['event_selected'])
+            edit_event(chat_id, chats[chat_id]['event_selected'], msg_id=msg_id)
         elif len(query_data.split(' ', 1)) == 2:
-            edit_event(chat_id, msg_id, int(query_data.split(' ', 1)[1]))
+            edit_event(chat_id, int(query_data.split(' ', 1)[1]), msg_id=msg_id)
         else:
             show_events(chat_id, '/edit', msg_id=msg_id)
 

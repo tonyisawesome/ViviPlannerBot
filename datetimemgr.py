@@ -13,18 +13,22 @@ def get_datetime(string):
     string = parse_dayofweek(string)
 
     m = re.search("(\d{1,2})[-/](\d{1,2})([-/]\d{1,4})?", string)
+    now = datetime.datetime.now()
 
     # Handle the case when no year stated
     if m:
         tmp = m.group(0)
         day = m.group(1)
         month = months[int(m.group(2)) - 1]
-
-        if m.group(3) is None:
-            string = re.sub(tmp, day + " " + month, string)
-
+        year = m.group(3) if m.group(3) else str(now.year)
+        string = re.sub(tmp, day + " " + month + " " + year, string)
     try:
-        return datefinder.find_dates(string).__next__()
+        dt = datefinder.find_dates(string).__next__()
+
+        if dt < now:
+            return dt.replace(year=now.year + 1)
+
+        return dt
     except StopIteration:
         return string
 
@@ -42,12 +46,10 @@ def datetime2str(dt):
 
 
 def reformat(dt):
-    if dt.day < 13:
-        month, day = dt.day, dt.month
-    else:
-        day, month = dt.day, dt.month
-
-    return short_days[dt.date().weekday()].title(), "{} {} {}".format(day, months[month - 1], dt.year), dt.time().strftime("%H:%M")
+    return short_days[dt.date().weekday()].title(), "{} {} {}".format(dt.day,
+                                                                      months[dt.month - 1],
+                                                                      dt.year), \
+           dt.time().strftime("%H:%M")
 
 
 def parse_dayofweek(string):
