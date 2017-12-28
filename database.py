@@ -170,15 +170,26 @@ class Planner:
 
     def save_history(self, chat_id, plan):
         print(plan["desc"] + " saved to history!")
-        iomgr.save(HISTORY_JSON, self.history[chat_id].append(plan))
+
+        if self.history is None:
+            self.history = dict()
+
+        if chat_id not in self.history:
+            self.history[chat_id] = []
+
+        self.history[chat_id].append(plan)
+        iomgr.save(HISTORY_JSON, self.history)
 
     def show_history(self, chat_id):
         chat_id = str(chat_id)
         self.filter_plans(chat_id)
 
-        if chat_id not in self.history or not self.history[chat_id]:
+        if self.history is None or chat_id not in self.history or not self.history[chat_id]:
             return "_No events planned._", []
 
         # self.history[chat_id] = sort_plans(self.history[chat_id])
         plans = ["{}".format(plan["desc"]) for i, plan in enumerate(self.history[chat_id])]
-        return "❤️ *Our History Together* ❤️", plans
+        return "_Every_ *moment* _we share together_\n" \
+               "_is even better than the_ *moment* _before._\n" \
+               "_If everyday was as good as_ *today* _was_\n" \
+               "_then I can't wait till_ *tomorrow* _comes_...", plans
