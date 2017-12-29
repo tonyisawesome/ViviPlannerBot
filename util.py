@@ -44,6 +44,6 @@ def sort_plans(plans):
             without_dt.append(plan)
 
     with_dt = sorted(with_dt,
-                     key=lambda x: x['dt'])
+                     key=lambda x: get_datetime(x['dt']))
 
     return with_dt + without_dt
