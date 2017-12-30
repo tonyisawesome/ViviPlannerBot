@@ -47,3 +47,12 @@ def sort_plans(plans):
                      key=lambda x: get_datetime(x['dt']))
 
     return with_dt + without_dt
+
+
+def title(string):
+    tokens = string.split()
+
+    for i, token in enumerate(tokens):
+        tokens[i] = token[0].title() + token[1:]
+
+    return ' '.join(tokens)

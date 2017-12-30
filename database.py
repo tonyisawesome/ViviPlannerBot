@@ -3,6 +3,7 @@ from datetime import datetime
 from util import sort_plans
 from constants import *
 import iomgr
+import util
 
 
 class Planner:
@@ -16,7 +17,7 @@ class Planner:
         if chat_id not in self.plans:
             self.plans[chat_id] = []
 
-        self.plans[chat_id].append({"desc": desc,
+        self.plans[chat_id].append({"desc": util.title(desc),
                                     "loc": place,
                                     "dt": time})
 
@@ -35,7 +36,7 @@ class Planner:
 
     def set_desc(self, chat_id, i, desc):
         try:
-            self.plans[str(chat_id)][i]["desc"] = desc
+            self.plans[str(chat_id)][i]["desc"] = util.title(desc)
             iomgr.save(PLANS_JSON, self.plans)
             return "*Description is updated!* 😎"
         except IndexError:

@@ -76,7 +76,6 @@ def show_exception(chat_id, exception):
 def show_menu(chat_id, from_info, msg_id=None):
     button_list = [
         InlineKeyboardButton(text="New Event", callback_data="/new"),
-        InlineKeyboardButton(text="Edit Event", callback_data="/edit"),
         InlineKeyboardButton(text="Delete Event", callback_data="/delete"),
         InlineKeyboardButton(text="Events List", callback_data="/all"),
         InlineKeyboardButton(text="View History", callback_data="/histories")
@@ -128,9 +127,11 @@ def show_events(chat_id, cmd, msg_id=None):
 
 
 def show_event(chat_id, i, msg_id=None):
+    chats[chat_id]['event_selected'] = i
     button_list = [InlineKeyboardButton(text="Edit Event", callback_data="/edit"),
                    InlineKeyboardButton(text="Delete Event", callback_data="/delete"),
-                   InlineKeyboardButton(text="« Back to Menu", callback_data="/menu")]
+                   InlineKeyboardButton(text="Add Note", callback_data="/add_note"),
+                   InlineKeyboardButton(text="« Back to List", callback_data="/all")]
     reply_markup = InlineKeyboardMarkup(inline_keyboard=util.build_menu(button_list, n_cols=2))
     msg = planner.show(chat_id, i)
 
@@ -144,8 +145,6 @@ def show_event(chat_id, i, msg_id=None):
                         msg,
                         parse_mode=telegram.ParseMode.MARKDOWN,
                         reply_markup=reply_markup)
-
-    chats[chat_id]['event_selected'] = i
 
 
 def show_histories(chat_id, msg_id=None):
@@ -191,11 +190,13 @@ def show_history(chat_id, i, msg_id=None):
 
 
 def edit_event(chat_id, i, msg_id=None):
+    chats[chat_id]['event_selected'] = i
     button_list = [InlineKeyboardButton(text="Edit Description", callback_data="/setdescription"),
                    InlineKeyboardButton(text="Edit Location", callback_data="/setlocation"),
                    InlineKeyboardButton(text="Edit Date", callback_data="/setdate"),
                    InlineKeyboardButton(text="Edit Time", callback_data="/settime"),
-                   InlineKeyboardButton(text="« Back to Menu", callback_data="/menu")]
+                   InlineKeyboardButton(text="« Back to Event", callback_data="/show {}".format(chats[chat_id]['event_selected'])),
+                   InlineKeyboardButton(text="« Back to List", callback_data="/all")]
     reply_markup = InlineKeyboardMarkup(inline_keyboard=util.build_menu(button_list, n_cols=2))
 
     if msg_id:
@@ -208,7 +209,6 @@ def edit_event(chat_id, i, msg_id=None):
                         planner.show(chat_id, i),
                         parse_mode=telegram.ParseMode.MARKDOWN,
                         reply_markup=reply_markup)
-    chats[chat_id]['event_selected'] = i
 
 
 def add_event(chat_id, plan, from_info):
@@ -335,7 +335,7 @@ def on_callback_query(msg):
     query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
     chat_id = msg['message']['chat']['id']
     msg_id = msg['message']['message_id']
-    # print(msg)
+    print(msg)
 
     if chat_id not in chats:
         init_chat_info(chat_id)
@@ -387,16 +387,19 @@ def on_callback_query(msg):
             bot.answerCallbackQuery(query_id, "This event is no longer valid! 😣")
     elif '/delete' in query_data:
         text = ""
+        cmd = '/delete'
 
         if chats[chat_id]['event_selected'] is not None:
             planner.delete(chat_id, chats[chat_id]['event_selected'])
+            chats[chat_id]['event_selected'] = None     # Reset
             text = "Aww... 😿"
+            cmd = '/show'
         elif len(query_data.split(' ', 1)) == 2:
             planner.delete(chat_id, int(query_data.split(' ', 1)[1]))
             text = "Aww... 😿"
 
+        show_events(chat_id, cmd, msg_id=msg_id)  # Refresh UI
         bot.answerCallbackQuery(query_id, text=text)
-        show_events(chat_id, '/delete', msg_id=msg_id)             # Refresh UI
     elif '/histories' == query_data:
         show_histories(chat_id, msg_id=msg_id)
     elif query_data == '/menu':
