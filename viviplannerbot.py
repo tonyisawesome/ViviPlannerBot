@@ -241,7 +241,7 @@ def edit_time(chat_id, i, t):
 def on_chat_message(msg):
     global chats, planner
 
-    chat_id = msg['chat']['id']
+    chat_id = str(msg['chat']['id'])
     text = msg['text']
     command, content = util.parse(text)
 
@@ -333,9 +333,10 @@ def on_callback_query(msg):
     global chats
 
     query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
-    chat_id = msg['message']['chat']['id']
+    chat_id = str(msg['message']['chat']['id'])
     msg_id = msg['message']['message_id']
-    print(msg)
+    print("Callback query: " + query_data)
+    # print(msg)
 
     if chat_id not in chats:
         init_chat_info(chat_id)

@@ -17,14 +17,18 @@ class Planner:
         if chat_id not in self.plans:
             self.plans[chat_id] = []
 
+        # util.insert_new_plan(self.plans[chat_id], {"desc": util.title(desc),
+        #                                            "loc": place,
+        #                                            "dt": time})
+
         self.plans[chat_id].append({"desc": util.title(desc),
                                     "loc": place,
                                     "dt": time})
 
+        self.plans[chat_id] = sort_plans(self.plans[chat_id])
+
         print("Added a new event!")
         iomgr.save(PLANS_JSON, self.plans)
-
-        # self.plans[chat_id] = sort_plans(self.plans[chat_id])
 
     def get_desc(self, chat_id, i):
         try:
@@ -64,12 +68,7 @@ class Planner:
 
     def get_date(self, chat_id, i):
         try:
-            dt_str = self.plans[str(chat_id)][i]["dt"]
-
-            if is_datetime(dt_str) and ":" in dt_str:
-                return dt_str[:dt_str.rfind(",")]
-
-            return dt_str
+            return util.extract_date(self.plans[str(chat_id)][i])
         except IndexError:
             return None
         except KeyError:
@@ -78,14 +77,14 @@ class Planner:
     def set_date(self, chat_id, i, date):
         try:
             chat_id = str(chat_id)
-            dt_str = self.plans[chat_id][i]["dt"]
+            plan = self.plans[chat_id][i]
             date = datetime2str(get_datetime(date))
-            time = self.get_time(chat_id, i)
+            time = util.extract_time(plan)
 
-            if ":" not in date and is_datetime(dt_str) and time:
+            if ":" not in date and is_datetime(plan["dt"]) and time:
                 date += ", " + time
 
-            self.plans[chat_id][i]["dt"] = date
+            plan["dt"] = date
             iomgr.save(PLANS_JSON, self.plans)
             return "*Date is updated!* 😎"
         except IndexError:
@@ -95,15 +94,7 @@ class Planner:
 
     def get_time(self, chat_id, i):
         try:
-            dt_str = self.plans[str(chat_id)][i]["dt"]
-
-            if is_datetime(dt_str):
-                if ":" in dt_str:
-                    return dt_str[dt_str.rfind(",") + 2:]
-
-                return ""
-
-            return dt_str
+            return util.extract_time(self.plans[chat_id][i])
         except IndexError:
             return None
         except KeyError:
@@ -111,11 +102,12 @@ class Planner:
 
     def set_time(self, chat_id, i, time):
         try:
-            dt_str = self.plans[str(chat_id)][i]["dt"]
+            plan = self.plans[str(chat_id)][i]
+            dt_str = plan["dt"]
 
             if is_datetime(dt_str):
-                dt_str = self.get_date(chat_id, i) + ", " + time
-                self.plans[str(chat_id)][i]["dt"] = datetime2str(get_datetime(dt_str))
+                dt_str = util.extract_date(plan) + ", " + time
+                plan["dt"] = datetime2str(get_datetime(dt_str))
             else:
                 return "_Set a date first!_"
 
@@ -128,18 +120,30 @@ class Planner:
 
     def show_all(self, chat_id):
         chat_id = str(chat_id)
+        plans = self.plans[chat_id]
+        text = "Choose an event from the list below:"
         self.filter_plans(chat_id)
 
         if chat_id not in self.plans or not self.plans[chat_id]:
             return "_No events planned currently._", []
 
-        self.plans[chat_id] = sort_plans(self.plans[chat_id])
-        plans = ["{}".format(plan["desc"]) for i, plan in enumerate(self.plans[chat_id])]
-        return "Choose an event from the list below:", plans
+        headers = []
 
-    def show(self, chat_id, i, history=False):
+        # self.plans[chat_id] = sort_plans(self.plans[chat_id])
+        for i, plan in enumerate(plans):
+            header = plan["desc"] if "desc" in plan else plan["date"] + " »"
+            headers.append(header)
+
+        return text, headers
+
+    def show(self, chat_id, i, group=None, history=False):
         try:
-            event = self.plans[str(chat_id)][i] if not history else self.history[str(chat_id)][i]
+            chat_id = str(chat_id)
+
+            if group is None:
+                event = self.plans[chat_id][i] if not history else self.history[chat_id][i]
+            else:
+                event = self.plans[chat_id][group]["events"][i] if not history else self.history[chat_id][group]["events"][i]
 
             return "*Description* 📝\n" \
                    "{}\n\n" \
@@ -162,12 +166,18 @@ class Planner:
         except IndexError:
             return "*This action is invalid!* 😾"
 
+    # Note: Assumed that list is sorted from earliest to latest datetime
     def filter_plans(self, chat_id):
         for i, plan in enumerate(self.plans[chat_id]):
-            if is_datetime(plan['dt']) and get_datetime(plan['dt']) < datetime.now():
-                print(plan['desc'] + " is outdated!")
-                self.save_history(chat_id, plan)
-                self.delete(chat_id, i)
+            if 'dt' in plan and is_datetime(plan['dt']) and get_datetime(plan['dt']) < datetime.now():
+                self.move_to_history(chat_id, i, plan)
+            else:
+                return
+
+    def move_to_history(self, chat_id, i, plan):
+        print(plan['desc'] + " is outdated!")
+        self.save_history(chat_id, plan)
+        self.delete(chat_id, i)
 
     def save_history(self, chat_id, plan):
         print(plan["desc"] + " saved to history!")
@@ -194,3 +204,5 @@ class Planner:
                "_is even better than the_ *moment* _before._\n" \
                "_If everyday was as good as_ *today* _was_\n" \
                "_then I can't wait till_ *tomorrow* _comes_...", plans
+
+
