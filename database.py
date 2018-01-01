@@ -1,4 +1,4 @@
-from datetimemgr import datetime2str, get_datetime, is_datetime
+from datetimemgr import datetime2str, get_datetime, is_datetime, update_year
 from datetime import datetime
 from util import sort_plans
 from constants import *
@@ -78,7 +78,7 @@ class Planner:
         try:
             chat_id = str(chat_id)
             plan = self.plans[chat_id][i]
-            date = datetime2str(get_datetime(date))
+            date = datetime2str(update_year(get_datetime(date)))
             time = util.extract_time(plan)
 
             if ":" not in date and is_datetime(plan["dt"]) and time:
@@ -169,10 +169,10 @@ class Planner:
     # Note: Assumed that list is sorted from earliest to latest datetime
     def filter_plans(self, chat_id):
         for i, plan in enumerate(self.plans[chat_id]):
-            if 'dt' in plan and is_datetime(plan['dt']) and get_datetime(plan['dt']) < datetime.now():
-                self.move_to_history(chat_id, i, plan)
-            else:
+            if not is_datetime(plan['dt']) or get_datetime(plan['dt']) >= datetime.now():
                 return
+
+            self.move_to_history(chat_id, i, plan)
 
     def move_to_history(self, chat_id, i, plan):
         print(plan['desc'] + " is outdated!")

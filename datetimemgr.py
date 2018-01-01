@@ -25,11 +25,9 @@ def get_datetime(string):
     try:
         dt = datefinder.find_dates(string).__next__()
 
+        # 00:00 is the default time for a datetime when no time is given
         if dt.time().strftime("%H:%M") == "00:00":
             dt.replace(hour=23, minute=59, second=59)
-
-        if dt < now:
-            return dt.replace(year=now.year + 1)
 
         return dt
     except StopIteration:
@@ -70,3 +68,10 @@ def parse_dayofweek(string):
 
 def is_datetime(dt_str):
     return type(get_datetime(dt_str)) is datetime.datetime
+
+
+def update_year(dt):
+    now = datetime.datetime.now()
+
+    if dt < now:
+        return dt.replace(year=now.year + 1)

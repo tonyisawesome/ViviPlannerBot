@@ -267,7 +267,7 @@ def on_chat_message(msg):
             query_user_new(chat_id, msg['from'], "when")
         elif 'when is the event?' in reply_to_text.lower():
             # chats[chat_id]["event"]["dt"] = str2datetime(content)
-            chats[chat_id]["event"]["dt"] = datetime2str(get_datetime(content))
+            chats[chat_id]["event"]["dt"] = datetime2str(update_year(get_datetime(content)))
 
             # Save to database
             add_event(chat_id, chats[chat_id]["event"], msg['from'])
