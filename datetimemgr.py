@@ -8,6 +8,9 @@ short_days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
 
 def get_datetime(string):
+    if string is None:
+        return string
+
     # Pre-processing
     string = string.replace(".", ":")
     string = parse_dayofweek(string)
@@ -27,7 +30,7 @@ def get_datetime(string):
 
         # 00:00 is the default time for a datetime when no time is given
         if dt.time().strftime("%H:%M") == "00:00":
-            dt.replace(hour=23, minute=59, second=59)
+            dt = dt.replace(hour=23, minute=59, second=59)
 
         return dt
     except StopIteration:
@@ -71,7 +74,12 @@ def is_datetime(dt_str):
 
 
 def update_year(dt):
-    now = datetime.datetime.now()
+    try:
+        now = datetime.datetime.now()
 
-    if dt < now:
-        return dt.replace(year=now.year + 1)
+        if dt < now:
+            return dt.replace(year=now.year + 1)
+
+        return dt
+    except TypeError:
+        return dt
