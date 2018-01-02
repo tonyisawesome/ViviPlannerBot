@@ -47,7 +47,5 @@ Temporary Items
 .apdisk
 *.pyc
 .idea
-*.pyc
 .idea/workspace.xml
-.idea/workspace.xml
-.idea/workspace.xml
+*.xml

@@ -10,6 +10,10 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
+<<<<<<< HEAD
+    <SUITE FILE_PATH="coverage/ViviPlannerBot$viviplannerbot.coverage" NAME="viviplannerbot Coverage Results" MODIFIED="1514881810231" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+=======
+>>>>>>> 78881258579b90f953434d692397cc4ba398df7d
     <SUITE FILE_PATH="coverage/ViviPlannerBot$io.coverage" NAME="io Coverage Results" MODIFIED="1514427361568" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ViviPlannerBot$viviplannerbot.coverage" NAME="viviplannerbot Coverage Results" MODIFIED="1514889285361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -18,8 +22,18 @@
       <file leaf-file-name="viviplannerbot.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/viviplannerbot.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="459">
               <caret line="99" column="0" lean-forward="true" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
+=======
+<<<<<<< HEAD
+            <state relative-caret-position="307">
+              <caret line="211" column="0" lean-forward="false" selection-start-line="211" selection-start-column="0" selection-end-line="211" selection-end-column="0" />
+=======
+            <state relative-caret-position="340">
+              <caret line="92" column="54" lean-forward="true" selection-start-line="92" selection-start-column="54" selection-end-line="92" selection-end-column="54" />
+>>>>>>> 78881258579b90f953434d692397cc4ba398df7d
+>>>>>>> origin/master
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
                 <element signature="e#12073#12099#0" expanded="false" />
@@ -31,8 +45,13 @@
       <file leaf-file-name="database.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/database.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="764">
+              <caret line="160" column="26" lean-forward="false" selection-start-line="160" selection-start-column="26" selection-end-line="160" selection-end-column="26" />
+=======
             <state relative-caret-position="323">
               <caret line="172" column="22" lean-forward="false" selection-start-line="172" selection-start-column="22" selection-end-line="172" selection-end-column="22" />
+>>>>>>> 78881258579b90f953434d692397cc4ba398df7d
               <folding>
                 <element signature="e#0#76#0" expanded="true" />
               </folding>
@@ -56,8 +75,13 @@
       <file leaf-file-name="datetimemgr.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/datetimemgr.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="306">
+              <caret line="18" column="9" lean-forward="false" selection-start-line="18" selection-start-column="9" selection-end-line="18" selection-end-column="9" />
+=======
             <state relative-caret-position="286">
               <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+>>>>>>> 78881258579b90f953434d692397cc4ba398df7d
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -78,8 +102,13 @@
       <file leaf-file-name="history.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/history.json">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+            <state relative-caret-position="374">
+              <caret line="22" column="37" lean-forward="false" selection-start-line="22" selection-start-column="37" selection-end-line="22" selection-end-column="37" />
+=======
             <state relative-caret-position="0">
               <caret line="0" column="1977" lean-forward="false" selection-start-line="0" selection-start-column="1977" selection-end-line="0" selection-end-column="1977" />
+>>>>>>> 78881258579b90f953434d692397cc4ba398df7d
               <folding />
             </state>
           </provider>
@@ -586,8 +615,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/util.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="764">
+          <caret line="160" column="26" lean-forward="false" selection-start-line="160" selection-start-column="26" selection-end-line="160" selection-end-column="26" />
+=======
         <state relative-caret-position="116">
           <caret line="50" column="0" lean-forward="false" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+>>>>>>> 78881258579b90f953434d692397cc4ba398df7d
           <folding>
             <element signature="e#0#9#0" expanded="true" />
             <element signature="e#1617#1656#0" expanded="false" />
@@ -613,24 +647,46 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/datetimemgr.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="306">
+          <caret line="18" column="9" lean-forward="false" selection-start-line="18" selection-start-column="9" selection-end-line="18" selection-end-column="9" />
+=======
         <state relative-caret-position="286">
           <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+>>>>>>> 78881258579b90f953434d692397cc4ba398df7d
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/history.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="22" column="37" lean-forward="false" selection-start-line="22" selection-start-column="37" selection-end-line="22" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viviplannerbot.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="307">
+          <caret line="211" column="0" lean-forward="false" selection-start-line="211" selection-start-column="0" selection-end-line="211" selection-end-column="0" />
+=======
     <entry file="file://$PROJECT_DIR$/database.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="172" column="22" lean-forward="false" selection-start-line="172" selection-start-column="22" selection-end-line="172" selection-end-column="22" />
+>>>>>>> 78881258579b90f953434d692397cc4ba398df7d
           <folding>
             <element signature="e#0#76#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+<<<<<<< HEAD
+=======
     <entry file="file://$PROJECT_DIR$/viviplannerbot.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
@@ -642,5 +698,6 @@
         </state>
       </provider>
     </entry>
+>>>>>>> 78881258579b90f953434d692397cc4ba398df7d
   </component>
 </project>
