@@ -56,10 +56,11 @@ def query_user_edit(chat_id, from_info, i, query):
                     reply_markup=ForceReply(selective=True))
 
 
-def send_msg(chat_id, msg=""):
+def send_msg(chat_id, msg="", notify=True):
     bot.sendMessage(chat_id,
                     msg,
-                    parse_mode=telegram.ParseMode.MARKDOWN)
+                    parse_mode=telegram.ParseMode.MARKDOWN,
+                    disable_notification=not notify)
 
 
 def show_exception(chat_id, exception):
@@ -94,7 +95,8 @@ def show_menu(chat_id, from_info, msg_id=None):
         bot.sendMessage(chat_id,
                         msg,
                         parse_mode=telegram.ParseMode.MARKDOWN,
-                        reply_markup=reply_markup)
+                        reply_markup=reply_markup,
+                        disable_notification=True)
 
     chats[chat_id]['event_selected'] = None     # Reset
 
@@ -121,7 +123,8 @@ def show_events(chat_id, cmd, msg_id=None):
         bot.sendMessage(chat_id,
                         text,
                         parse_mode=telegram.ParseMode.MARKDOWN,
-                        reply_markup=reply_markup)
+                        reply_markup=reply_markup,
+                        disable_notification=True)
 
     return events
 
@@ -144,7 +147,8 @@ def show_event(chat_id, i, msg_id=None):
         bot.sendMessage(chat_id,
                         msg,
                         parse_mode=telegram.ParseMode.MARKDOWN,
-                        reply_markup=reply_markup)
+                        reply_markup=reply_markup,
+                        disable_notification=True)
 
 
 def show_histories(chat_id, msg_id=None):
@@ -184,7 +188,8 @@ def show_history(chat_id, i, msg_id=None):
         bot.sendMessage(chat_id,
                         msg,
                         parse_mode=telegram.ParseMode.MARKDOWN,
-                        reply_markup=reply_markup)
+                        reply_markup=reply_markup,
+                        disable_notification=True)
 
     chats[chat_id]['history_selected'] = i
 
@@ -208,7 +213,8 @@ def edit_event(chat_id, i, msg_id=None):
         bot.sendMessage(chat_id,
                         planner.show(chat_id, i),
                         parse_mode=telegram.ParseMode.MARKDOWN,
-                        reply_markup=reply_markup)
+                        reply_markup=reply_markup,
+                        disable_notification=True)
 
 
 def add_event(chat_id, plan, from_info):
