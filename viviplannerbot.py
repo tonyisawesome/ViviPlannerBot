@@ -56,10 +56,11 @@ def query_user_edit(chat_id, from_info, i, query):
                     reply_markup=ForceReply(selective=True))
 
 
-def send_msg(chat_id, msg=""):
+def send_msg(chat_id, msg="", notify=True):
     bot.sendMessage(chat_id,
                     msg,
-                    parse_mode=telegram.ParseMode.MARKDOWN)
+                    parse_mode=telegram.ParseMode.MARKDOWN,
+                    disable_notification=not notify)
 
 
 def show_exception(chat_id, exception):
@@ -76,7 +77,6 @@ def show_exception(chat_id, exception):
 def show_menu(chat_id, from_info, msg_id=None):
     button_list = [
         InlineKeyboardButton(text="New Event", callback_data="/new"),
-        InlineKeyboardButton(text="Edit Event", callback_data="/edit"),
         InlineKeyboardButton(text="Delete Event", callback_data="/delete"),
         InlineKeyboardButton(text="Events List", callback_data="/all"),
         InlineKeyboardButton(text="View History", callback_data="/histories")
@@ -95,7 +95,8 @@ def show_menu(chat_id, from_info, msg_id=None):
         bot.sendMessage(chat_id,
                         msg,
                         parse_mode=telegram.ParseMode.MARKDOWN,
-                        reply_markup=reply_markup)
+                        reply_markup=reply_markup,
+                        disable_notification=True)
 
     chats[chat_id]['event_selected'] = None     # Reset
 
@@ -122,15 +123,18 @@ def show_events(chat_id, cmd, msg_id=None):
         bot.sendMessage(chat_id,
                         text,
                         parse_mode=telegram.ParseMode.MARKDOWN,
-                        reply_markup=reply_markup)
+                        reply_markup=reply_markup,
+                        disable_notification=True)
 
     return events
 
 
 def show_event(chat_id, i, msg_id=None):
+    chats[chat_id]['event_selected'] = i
     button_list = [InlineKeyboardButton(text="Edit Event", callback_data="/edit"),
                    InlineKeyboardButton(text="Delete Event", callback_data="/delete"),
-                   InlineKeyboardButton(text="« Back to Menu", callback_data="/menu")]
+                   InlineKeyboardButton(text="Add Note", callback_data="/add_note"),
+                   InlineKeyboardButton(text="« Back to List", callback_data="/all")]
     reply_markup = InlineKeyboardMarkup(inline_keyboard=util.build_menu(button_list, n_cols=2))
     msg = planner.show(chat_id, i)
 
@@ -143,9 +147,8 @@ def show_event(chat_id, i, msg_id=None):
         bot.sendMessage(chat_id,
                         msg,
                         parse_mode=telegram.ParseMode.MARKDOWN,
-                        reply_markup=reply_markup)
-
-    chats[chat_id]['event_selected'] = i
+                        reply_markup=reply_markup,
+                        disable_notification=True)
 
 
 def show_histories(chat_id, msg_id=None):
@@ -185,17 +188,20 @@ def show_history(chat_id, i, msg_id=None):
         bot.sendMessage(chat_id,
                         msg,
                         parse_mode=telegram.ParseMode.MARKDOWN,
-                        reply_markup=reply_markup)
+                        reply_markup=reply_markup,
+                        disable_notification=True)
 
     chats[chat_id]['history_selected'] = i
 
 
 def edit_event(chat_id, i, msg_id=None):
+    chats[chat_id]['event_selected'] = i
     button_list = [InlineKeyboardButton(text="Edit Description", callback_data="/setdescription"),
                    InlineKeyboardButton(text="Edit Location", callback_data="/setlocation"),
                    InlineKeyboardButton(text="Edit Date", callback_data="/setdate"),
                    InlineKeyboardButton(text="Edit Time", callback_data="/settime"),
-                   InlineKeyboardButton(text="« Back to Menu", callback_data="/menu")]
+                   InlineKeyboardButton(text="« Back to Event", callback_data="/show {}".format(chats[chat_id]['event_selected'])),
+                   InlineKeyboardButton(text="« Back to List", callback_data="/all")]
     reply_markup = InlineKeyboardMarkup(inline_keyboard=util.build_menu(button_list, n_cols=2))
 
     if msg_id:
@@ -207,8 +213,8 @@ def edit_event(chat_id, i, msg_id=None):
         bot.sendMessage(chat_id,
                         planner.show(chat_id, i),
                         parse_mode=telegram.ParseMode.MARKDOWN,
-                        reply_markup=reply_markup)
-    chats[chat_id]['event_selected'] = i
+                        reply_markup=reply_markup,
+                        disable_notification=True)
 
 
 def add_event(chat_id, plan, from_info):
@@ -241,7 +247,7 @@ def edit_time(chat_id, i, t):
 def on_chat_message(msg):
     global chats, planner
 
-    chat_id = msg['chat']['id']
+    chat_id = str(msg['chat']['id'])
     text = msg['text']
     command, content = util.parse(text)
 
@@ -267,7 +273,7 @@ def on_chat_message(msg):
             query_user_new(chat_id, msg['from'], "when")
         elif 'when is the event?' in reply_to_text.lower():
             # chats[chat_id]["event"]["dt"] = str2datetime(content)
-            chats[chat_id]["event"]["dt"] = datetime2str(get_datetime(content))
+            chats[chat_id]["event"]["dt"] = datetime2str(update_year(get_datetime(content)))
 
             # Save to database
             add_event(chat_id, chats[chat_id]["event"], msg['from'])
@@ -333,8 +339,9 @@ def on_callback_query(msg):
     global chats
 
     query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
-    chat_id = msg['message']['chat']['id']
+    chat_id = str(msg['message']['chat']['id'])
     msg_id = msg['message']['message_id']
+    print("Callback query: " + query_data)
     # print(msg)
 
     if chat_id not in chats:
@@ -387,16 +394,19 @@ def on_callback_query(msg):
             bot.answerCallbackQuery(query_id, "This event is no longer valid! 😣")
     elif '/delete' in query_data:
         text = ""
+        cmd = '/delete'
 
         if chats[chat_id]['event_selected'] is not None:
             planner.delete(chat_id, chats[chat_id]['event_selected'])
+            chats[chat_id]['event_selected'] = None     # Reset
             text = "Aww... 😿"
+            cmd = '/show'
         elif len(query_data.split(' ', 1)) == 2:
             planner.delete(chat_id, int(query_data.split(' ', 1)[1]))
             text = "Aww... 😿"
 
+        show_events(chat_id, cmd, msg_id=msg_id)  # Refresh UI
         bot.answerCallbackQuery(query_id, text=text)
-        show_events(chat_id, '/delete', msg_id=msg_id)             # Refresh UI
     elif '/histories' == query_data:
         show_histories(chat_id, msg_id=msg_id)
     elif query_data == '/menu':
@@ -415,4 +425,4 @@ print('Listening ...')
 
 # Keep the program running.
 while True:
-    time.sleep(0.5)
+    time.sleep(1)
