@@ -425,4 +425,4 @@ print('Listening ...')
 
 # Keep the program running.
 while True:
-    time.sleep(1)
+    time.sleep(0.5)

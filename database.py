@@ -85,6 +85,7 @@ class Planner:
                 date += ", " + time
 
             plan["dt"] = date
+            self.plans[chat_id] = sort_plans(self.plans[chat_id])
             iomgr.save(PLANS_JSON, self.plans)
             return "*Date is updated!* 😎"
         except IndexError:
@@ -111,6 +112,7 @@ class Planner:
             else:
                 return "_Set a date first!_"
 
+            self.plans[chat_id] = sort_plans(self.plans[chat_id])
             iomgr.save(PLANS_JSON, self.plans)
             return "*Time is updated!* 😎"
         except IndexError:
