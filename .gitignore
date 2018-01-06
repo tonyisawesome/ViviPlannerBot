@@ -52,3 +52,5 @@ Temporary Items
 *.iml
 *.iml
 *.xml
+*.iml
+.idea/misc.xml
